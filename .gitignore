@@ -1,0 +1,47 @@
+# 环境变量文件（包含敏感信息）
+.env
+
+# 二进制文件
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+task-management-system
+server
+
+# 测试文件
+*.test
+*.out
+coverage.txt
+
+# 依赖目录
+vendor/
+
+# Go workspace file
+go.work
+
+# IDE配置文件
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
+
+# 日志文件
+*.log
+
+# 数据文件
+*.db
+*.sqlite
+*.sqlite3
+
+# Docker
+docker-compose.override.yml
+
+# 临时文件
+tmp/
+temp/
