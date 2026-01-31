@@ -7,11 +7,9 @@
 *.dll
 *.so
 *.dylib
-task-management-system
 server
 
 # 测试文件
-*.test
 *.out
 coverage.txt
 
