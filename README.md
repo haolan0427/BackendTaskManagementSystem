@@ -1,3 +1,19 @@
+
+
+## 2026-2-03
+
+`./task-management-system/pkg/cache/redis.go` 实现 redis 缓存客户端，提供简单的键值存储功能
+
+`./task-management-system/pkg/jwt/jwt.go` 实现JWT 认证管理器，用于生成和验证用户认证令牌，实现无状态的用户认证
+
+`./task-management-system/internal/middleware/auto.go` 实现 JWT 认证中间件，用于保护需要登录才能访问的 API 路由
+
+`./task-management-system/internal/middleware/ratelimit.go` 实现 API 限流中间件，用于防止 API 被滥用，保护服务器免受恶意攻击
+
+上传到 github 上，提交信息为 `“实现 redis 缓存客户端、JWT 认证管理器、 JWT 认证中间件和API 限流中间件”` 。
+
+
+
 ## 2026-02-02
 
 在 `./task-management-system/internal/model/` 路径下新建 `user.go` `task.go` ，声明 2 个结构体，对应着数据库中的 users 和 tasks 这 2 个表，

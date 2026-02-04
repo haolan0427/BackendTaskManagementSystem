@@ -5,6 +5,7 @@
 这是一个难度中上的Go后端项目，旨在帮助你巩固已学知识并学习进阶概念。
 
 ### 项目特点
+
 - **70%已学知识**：基础语法、结构体、接口、HTTP服务器、数据库操作、错误处理
 - **30%新知识**：JWT认证、Redis缓存、Worker Pool、中间件、配置管理、单元测试、Docker
 
@@ -64,12 +65,14 @@ task-management-system/
 ## 核心功能
 
 ### 1. 用户认证系统
+
 - 用户注册和登录
 - JWT Token生成和验证
 - 密码加密存储
 - Token刷新机制
 
 ### 2. 任务管理
+
 - 任务的CRUD操作
 - 任务状态管理（待办、进行中、已完成）
 - 任务优先级设置
@@ -77,17 +80,20 @@ task-management-system/
 - 任务搜索和过滤
 
 ### 3. 异步任务处理
+
 - Worker Pool模式处理后台任务
 - 任务队列管理
 - 任务执行状态跟踪
 - 失败重试机制
 
 ### 4. 缓存系统
+
 - Redis缓存热点数据
 - 缓存失效策略
 - 缓存预热机制
 
 ### 5. API限流
+
 - 基于IP的限流
 - 基于用户的限流
 - 限流算法实现
@@ -97,6 +103,7 @@ task-management-system/
 ## 技术栈
 
 ### 核心技术
+
 - **语言**: Go 1.21+
 - **Web框架**: Gin
 - **数据库**: MySQL
@@ -105,6 +112,7 @@ task-management-system/
 - **认证**: JWT
 
 ### 工具库
+
 - **配置管理**: Viper
 - **日志**: Zap
 - **验证**: Go-playground/validator
@@ -116,30 +124,35 @@ task-management-system/
 ## 实现步骤
 
 ### 阶段一：项目初始化（基础）
+
 1. 创建项目结构
 2. 初始化Go模块
 3. 配置Docker环境
 4. 数据库连接和模型定义
 
 ### 阶段二：用户认证（新知识30%）
+
 1. 用户注册和登录API
 2. JWT Token生成和验证
 3. 中间件实现（认证、CORS、日志）
 4. 密码加密和验证
 
 ### 阶段三：任务管理（基础70%）
+
 1. 任务CRUD API
 2. 任务状态和优先级管理
 3. 任务搜索和过滤
 4. 单元测试编写
 
 ### 阶段四：高级功能（新知识30%）
+
 1. Worker Pool实现
 2. Redis缓存集成
 3. API限流中间件
 4. 异步任务处理
 
 ### 阶段五：优化和部署（新知识30%）
+
 1. 性能优化
 2. 错误处理完善
 3. Docker容器化
@@ -151,7 +164,8 @@ task-management-system/
 
 ### 1. 项目初始化
 
-#### 创建项目结构
+#### 创建项目结构 ✅
+
 ```bash
 mkdir task-management-system
 cd task-management-system
@@ -161,7 +175,8 @@ go mod init task-management-system
 mkdir -p cmd/server internal/{config,handler,middleware,model,repository,service,worker} pkg/{cache,database,jwt} configs tests
 ```
 
-#### 配置文件
+#### 配置文件 ✅
+
 ```yaml
 # configs/config.yaml
 server:
@@ -192,7 +207,8 @@ rate_limit:
 
 ### 2. 数据库模型
 
-#### 用户模型
+#### 用户模型 ✅
+
 ```go
 package model
 
@@ -213,7 +229,8 @@ type User struct {
 }
 ```
 
-#### 任务模型
+#### 任务模型 ✅
+
 ```go
 package model
 
@@ -253,7 +270,7 @@ const (
 )
 ```
 
-### 3. 配置管理
+### 3. 配置管理 ✅
 
 ```go
 package config
@@ -319,7 +336,7 @@ func LoadConfig(path string) (*Config, error) {
 }
 ```
 
-### 4. 数据库连接
+### 4. 数据库连接 ✅
 
 ```go
 package database
@@ -352,7 +369,7 @@ func NewMySQLDB(cfg *config.DatabaseConfig) (*gorm.DB, error) {
 }
 ```
 
-### 5. Redis缓存
+### 5. Redis缓存 ✅
 
 ```go
 package cache
@@ -406,7 +423,7 @@ func (r *RedisClient) Close() error {
 }
 ```
 
-### 6. JWT工具
+### 6. JWT工具 ✅ 
 
 ```go
 package jwt
@@ -473,7 +490,8 @@ func (j *JWTManager) ValidateToken(tokenString string) (*Claims, error) {
 
 ### 7. 中间件
 
-#### 认证中间件
+#### 认证中间件 ✅ 
+
 ```go
 package middleware
 
@@ -509,7 +527,8 @@ func AuthMiddleware(jwtManager *jwt.JWTManager) gin.HandlerFunc {
 }
 ```
 
-#### 限流中间件
+#### 限流中间件 ✅
+
 ```go
 package middleware
 
@@ -573,7 +592,7 @@ func RateLimitMiddleware(limiter *RateLimiter) gin.HandlerFunc {
 }
 ```
 
-### 8. Worker Pool
+### 8. Worker Pool ✅
 
 ```go
 package worker
@@ -666,9 +685,321 @@ func (p *Pool) Shutdown() {
 }
 ```
 
-### 9. Handler实现
+### 9. Repository实现
+
+#### 用户Repository ✅
+
+```go
+package repository
+
+import (
+	"task-management-system/internal/model"
+
+	"gorm.io/gorm"
+)
+
+type UserRepository struct {
+	db *gorm.DB
+}
+
+func NewUserRepository(db *gorm.DB) *UserRepository {
+	return &UserRepository{db: db}
+}
+
+func (r *UserRepository) Create(user *model.User) error {
+	return r.db.Create(user).Error
+}
+
+func (r *UserRepository) FindByID(id uint) (*model.User, error) {
+	var user model.User
+	err := r.db.First(&user, id).Error
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
+func (r *UserRepository) FindByEmail(email string) (*model.User, error) {
+	var user model.User
+	err := r.db.Where("email = ?", email).First(&user).Error
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
+func (r *UserRepository) FindByUsername(username string) (*model.User, error) {
+	var user model.User
+	err := r.db.Where("username = ?", username).First(&user).Error
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
+func (r *UserRepository) Update(user *model.User) error {
+	return r.db.Save(user).Error
+}
+
+func (r *UserRepository) Delete(id uint) error {
+	return r.db.Delete(&model.User{}, id).Error
+}
+
+```
+
+#### 任务Repository ✅
+
+```go
+package repository
+
+import (
+	"task-management-system/internal/model"
+
+	"gorm.io/gorm"
+)
+
+type TaskRepository struct {
+	db *gorm.DB
+}
+
+func NewTaskRepository(db *gorm.DB) *TaskRepository {
+	return &TaskRepository{db: db}
+}
+
+func (r *TaskRepository) Create(task *model.Task) error {
+	return r.db.Create(task).Error
+}
+
+func (r *TaskRepository) FindByID(id uint) (*model.Task, error) {
+	var task model.Task
+	err := r.db.Preload("User").First(&task, id).Error
+	if err != nil {
+		return nil, err
+	}
+	return &task, nil
+}
+
+func (r *TaskRepository) FindByUserID(userID uint) ([]model.Task, error) {
+	var tasks []model.Task
+	err := r.db.Where("user_id = ?", userID).Find(&tasks).Error
+	return tasks, err
+}
+
+func (r *TaskRepository) FindByUserIDAndStatus(userID uint, status string) ([]model.Task, error) {
+	var tasks []model.Task
+	err := r.db.Where("user_id = ? AND status = ?", userID, status).Find(&tasks).Error
+	return tasks, err
+}
+
+func (r *TaskRepository) FindByUserIDAndPriority(userID uint, priority string) ([]model.Task, error) {
+	var tasks []model.Task
+	err := r.db.Where("user_id = ? AND priority = ?", userID, priority).Find(&tasks).Error
+	return tasks, err
+}
+
+func (r *TaskRepository) FindByUserIDWithFilters(userID uint, status, priority string) ([]model.Task, error) {
+	var tasks []model.Task
+	query := r.db.Where("user_id = ?", userID)
+
+	if status != "" {
+		query = query.Where("status = ?", status)
+	}
+	if priority != "" {
+		query = query.Where("priority = ?", priority)
+	}
+
+	err := query.Find(&tasks).Error
+	return tasks, err
+}
+
+func (r *TaskRepository) Update(task *model.Task) error {
+	return r.db.Save(task).Error
+}
+
+func (r *TaskRepository) Delete(id uint) error {
+	return r.db.Delete(&model.Task{}, id).Error
+}
+
+func (r *TaskRepository) CountByUserID(userID uint) (int64, error) {
+	var count int64
+	err := r.db.Model(&model.Task{}).Where("user_id = ?", userID).Count(&count).Error
+	return count, err
+}
+
+```
+
+### 10. Service层
+
+#### 用户Service ✅
+
+```go
+package service
+
+import (
+    "errors"
+    "task-management-system/internal/model"
+    "task-management-system/internal/repository"
+    "task-management-system/pkg/jwt"
+    
+    "golang.org/x/crypto/bcrypt"
+)
+
+type UserService struct {
+    userRepo *repository.UserRepository
+    jwtMgr   *jwt.JWTManager
+}
+
+func NewUserService(userRepo *repository.UserRepository, jwtMgr *jwt.JWTManager) *UserService {
+    return &UserService{
+        userRepo: userRepo,
+        jwtMgr:   jwtMgr,
+    }
+}
+
+func (s *UserService) Register(user *model.User) error {
+    hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+    if err != nil {
+        return err
+    }
+    user.Password = string(hashedPassword)
+    
+    return s.userRepo.Create(user)
+}
+
+func (s *UserService) Login(email, password string) (string, *model.User, error) {
+    user, err := s.userRepo.GetByEmail(email)
+    if err != nil {
+        return "", nil, errors.New("invalid credentials")
+    }
+    
+    if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
+        return "", nil, errors.New("invalid credentials")
+    }
+    
+    token, err := s.jwtMgr.GenerateToken(user.ID, user.Email)
+    if err != nil {
+        return "", nil, err
+    }
+    
+    return token, user, nil
+}
+```
+
+#### 任务Service ✅
+
+```go
+package service
+
+import (
+    "errors"
+    "task-management-system/internal/model"
+    "task-management-system/internal/repository"
+    "task-management-system/pkg/cache"
+    
+    "context"
+    "time"
+)
+
+type TaskService struct {
+    taskRepo *repository.TaskRepository
+    cache    *cache.RedisClient
+    pool     *worker.Pool
+}
+
+func NewTaskService(taskRepo *repository.TaskRepository, cache *cache.RedisClient, pool *worker.Pool) *TaskService {
+    return &TaskService{
+        taskRepo: taskRepo,
+        cache:    cache,
+        pool:     pool,
+    }
+}
+
+func (s *TaskService) CreateTask(task *model.Task) error {
+    if err := s.taskRepo.Create(task); err != nil {
+        return err
+    }
+    
+    s.pool.Submit(func(ctx context.Context) error {
+        return s.cache.Set(ctx, taskCacheKey(task.ID), task, 5*time.Minute)
+    })
+    
+    return nil
+}
+
+func (s *TaskService) GetTasks(userID uint, status, priority string) ([]model.Task, error) {
+    return s.taskRepo.GetByUserIDWithFilters(userID, status, priority)
+}
+
+func (s *TaskService) GetTaskByID(id uint) (*model.Task, error) {
+    var task model.Task
+    err := s.cache.Get(context.Background(), taskCacheKey(id), &task)
+    if err == nil {
+        return &task, nil
+    }
+    
+    task, err = s.taskRepo.GetByID(id)
+    if err != nil {
+        return nil, err
+    }
+    
+    s.pool.Submit(func(ctx context.Context) error {
+        return s.cache.Set(ctx, taskCacheKey(task.ID), task, 5*time.Minute)
+    })
+    
+    return &task, nil
+}
+
+func (s *TaskService) UpdateTask(id uint, req UpdateTaskRequest) (*model.Task, error) {
+    task, err := s.taskRepo.GetByID(id)
+    if err != nil {
+        return nil, errors.New("task not found")
+    }
+    
+    if req.Title != "" {
+        task.Title = req.Title
+    }
+    if req.Description != "" {
+        task.Description = req.Description
+    }
+    if req.Status != "" {
+        task.Status = req.Status
+    }
+    if req.Priority != "" {
+        task.Priority = req.Priority
+    }
+    
+    if err := s.taskRepo.Update(task); err != nil {
+        return nil, err
+    }
+    
+    s.pool.Submit(func(ctx context.Context) error {
+        return s.cache.Delete(ctx, taskCacheKey(id))
+    })
+    
+    return task, nil
+}
+
+func (s *TaskService) DeleteTask(id uint) error {
+    if err := s.taskRepo.Delete(id); err != nil {
+        return err
+    }
+    
+    s.pool.Submit(func(ctx context.Context) error {
+        return s.cache.Delete(ctx, taskCacheKey(id))
+    })
+    
+    return nil
+}
+
+func taskCacheKey(id uint) string {
+    return fmt.Sprintf("task:%d", id)
+}
+```
+
+### 11. Handler实现
 
 #### 用户Handler
+
 ```go
 package handler
 
@@ -752,6 +1083,7 @@ func (h *UserHandler) Login(c *gin.Context) {
 ```
 
 #### 任务Handler
+
 ```go
 package handler
 
@@ -879,173 +1211,7 @@ func (h *TaskHandler) DeleteTask(c *gin.Context) {
 }
 ```
 
-### 10. Service层
-
-#### 用户Service
-```go
-package service
-
-import (
-    "errors"
-    "task-management-system/internal/model"
-    "task-management-system/internal/repository"
-    "task-management-system/pkg/jwt"
-    
-    "golang.org/x/crypto/bcrypt"
-)
-
-type UserService struct {
-    userRepo *repository.UserRepository
-    jwtMgr   *jwt.JWTManager
-}
-
-func NewUserService(userRepo *repository.UserRepository, jwtMgr *jwt.JWTManager) *UserService {
-    return &UserService{
-        userRepo: userRepo,
-        jwtMgr:   jwtMgr,
-    }
-}
-
-func (s *UserService) Register(user *model.User) error {
-    hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
-    if err != nil {
-        return err
-    }
-    user.Password = string(hashedPassword)
-    
-    return s.userRepo.Create(user)
-}
-
-func (s *UserService) Login(email, password string) (string, *model.User, error) {
-    user, err := s.userRepo.GetByEmail(email)
-    if err != nil {
-        return "", nil, errors.New("invalid credentials")
-    }
-    
-    if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
-        return "", nil, errors.New("invalid credentials")
-    }
-    
-    token, err := s.jwtMgr.GenerateToken(user.ID, user.Email)
-    if err != nil {
-        return "", nil, err
-    }
-    
-    return token, user, nil
-}
-```
-
-#### 任务Service
-```go
-package service
-
-import (
-    "errors"
-    "task-management-system/internal/model"
-    "task-management-system/internal/repository"
-    "task-management-system/pkg/cache"
-    
-    "context"
-    "time"
-)
-
-type TaskService struct {
-    taskRepo *repository.TaskRepository
-    cache    *cache.RedisClient
-    pool     *worker.Pool
-}
-
-func NewTaskService(taskRepo *repository.TaskRepository, cache *cache.RedisClient, pool *worker.Pool) *TaskService {
-    return &TaskService{
-        taskRepo: taskRepo,
-        cache:    cache,
-        pool:     pool,
-    }
-}
-
-func (s *TaskService) CreateTask(task *model.Task) error {
-    if err := s.taskRepo.Create(task); err != nil {
-        return err
-    }
-    
-    s.pool.Submit(func(ctx context.Context) error {
-        return s.cache.Set(ctx, taskCacheKey(task.ID), task, 5*time.Minute)
-    })
-    
-    return nil
-}
-
-func (s *TaskService) GetTasks(userID uint, status, priority string) ([]model.Task, error) {
-    return s.taskRepo.GetByUserIDWithFilters(userID, status, priority)
-}
-
-func (s *TaskService) GetTaskByID(id uint) (*model.Task, error) {
-    var task model.Task
-    err := s.cache.Get(context.Background(), taskCacheKey(id), &task)
-    if err == nil {
-        return &task, nil
-    }
-    
-    task, err = s.taskRepo.GetByID(id)
-    if err != nil {
-        return nil, err
-    }
-    
-    s.pool.Submit(func(ctx context.Context) error {
-        return s.cache.Set(ctx, taskCacheKey(task.ID), task, 5*time.Minute)
-    })
-    
-    return &task, nil
-}
-
-func (s *TaskService) UpdateTask(id uint, req UpdateTaskRequest) (*model.Task, error) {
-    task, err := s.taskRepo.GetByID(id)
-    if err != nil {
-        return nil, errors.New("task not found")
-    }
-    
-    if req.Title != "" {
-        task.Title = req.Title
-    }
-    if req.Description != "" {
-        task.Description = req.Description
-    }
-    if req.Status != "" {
-        task.Status = req.Status
-    }
-    if req.Priority != "" {
-        task.Priority = req.Priority
-    }
-    
-    if err := s.taskRepo.Update(task); err != nil {
-        return nil, err
-    }
-    
-    s.pool.Submit(func(ctx context.Context) error {
-        return s.cache.Delete(ctx, taskCacheKey(id))
-    })
-    
-    return task, nil
-}
-
-func (s *TaskService) DeleteTask(id uint) error {
-    if err := s.taskRepo.Delete(id); err != nil {
-        return err
-    }
-    
-    s.pool.Submit(func(ctx context.Context) error {
-        return s.cache.Delete(ctx, taskCacheKey(id))
-    })
-    
-    return nil
-}
-
-func taskCacheKey(id uint) string {
-    return fmt.Sprintf("task:%d", id)
-}
-```
-
-### 11. 主程序
+### 12. 主程序
 
 ```go
 package main
@@ -1125,9 +1291,10 @@ func main() {
 }
 ```
 
-### 12. Docker配置
+### 13. Docker配置
 
 #### Dockerfile
+
 ```dockerfile
 FROM golang:1.21-alpine AS builder
 
@@ -1153,6 +1320,7 @@ CMD ["./server"]
 ```
 
 #### docker-compose.yml
+
 ```yaml
 version: '3.8'
 
@@ -1197,6 +1365,7 @@ volumes:
 ## 学习目标
 
 ### 已学知识巩固（70%）
+
 1. Go基础语法和数据结构
 2. 结构体和方法
 3. 接口和多态
@@ -1206,6 +1375,7 @@ volumes:
 7. 并发编程基础
 
 ### 新知识学习（30%）
+
 1. JWT认证和授权
 2. Redis缓存集成
 3. Worker Pool模式
@@ -1221,6 +1391,7 @@ volumes:
 ### 认证接口
 
 #### 注册用户
+
 ```
 POST /api/v1/auth/register
 Content-Type: application/json
@@ -1233,6 +1404,7 @@ Content-Type: application/json
 ```
 
 #### 用户登录
+
 ```
 POST /api/v1/auth/login
 Content-Type: application/json
@@ -1246,6 +1418,7 @@ Content-Type: application/json
 ### 任务接口
 
 #### 创建任务
+
 ```
 POST /api/v1/tasks
 Authorization: Bearer <token>
@@ -1260,18 +1433,21 @@ Content-Type: application/json
 ```
 
 #### 获取任务列表
+
 ```
 GET /api/v1/tasks?status=pending&priority=high
 Authorization: Bearer <token>
 ```
 
 #### 获取单个任务
+
 ```
 GET /api/v1/tasks/1
 Authorization: Bearer <token>
 ```
 
 #### 更新任务
+
 ```
 PUT /api/v1/tasks/1
 Authorization: Bearer <token>
@@ -1283,6 +1459,7 @@ Content-Type: application/json
 ```
 
 #### 删除任务
+
 ```
 DELETE /api/v1/tasks/1
 Authorization: Bearer <token>
@@ -1293,6 +1470,7 @@ Authorization: Bearer <token>
 ## 测试指南
 
 ### 单元测试示例
+
 ```go
 package service
 
